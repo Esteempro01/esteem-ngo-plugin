@@ -13,10 +13,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Include necessary files
-include_once plugin_dir_path( __FILE__ ) . 'includes/database-tables.php';
-include_once plugin_dir_path( __FILE__ ) . 'includes/admin-settings.php';
-include_once plugin_dir_path( __FILE__ ) . 'includes/modules.php';
-include_once plugin_dir_path( __FILE__ ) . 'includes/shortcodes.php';
-include_once plugin_dir_path( __FILE__ ) . 'includes/email-templates.php';
-include_once plugin_dir_path( __FILE__ ) . 'includes/payment-integration.php';
-include_once plugin_dir_path( __FILE__ ) . 'includes/branding-settings.php';
+include_once plugin_dir_path( __FILE__ ) . 'includes/helpers.php';
+
+esteem_ngo_include_files(
+    array(
+        'database-tables',
+        'admin-settings',
+        'modules',
+        'shortcodes',
+        'email-templates',
+        'payment-integration',
+        'branding-settings',
+    )
+);
