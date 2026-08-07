@@ -1,12 +1,28 @@
 <?php
 
-// Check if the user is a super admin
-if (!current_user_can('super_admin')) {
-    wp_die('You do not have sufficient permissions to access this page.');
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+/**
+ * Capability required to view the dashboard.
+ *
+ * @return string
+ */
+function esteem_ngo_dashboard_capability() {
+    return is_multisite() ? 'manage_network_options' : 'manage_options';
 }
 
 // Dashboard function to display stats
 function display_super_admin_dashboard() {
+    if ( ! current_user_can( esteem_ngo_dashboard_capability() ) ) {
+        wp_die(
+            esc_html__( 'You do not have sufficient permissions to access this page.', 'esteem-ngo-plugin' ),
+            403
+        );
+    }
+
     // Sample data for widgets (replace with dynamic data)
     $total_campaigns = 100;
     $total_donations = 250000;
@@ -22,16 +38,21 @@ function display_super_admin_dashboard() {
     // HTML for the dashboard
     echo '<h1>Super Admin Dashboard</h1>';
     echo '<div>';
-    echo '<h2>Total Campaigns: ' . $total_campaigns . '</h2>';
-    echo '<h2>Total Donations: $' . number_format($total_donations) . '</h2>';
-    echo '<h2>Total Beneficiaries: ' . $total_beneficiaries . '</h2>';
-    echo '<h2>Total Volunteers: ' . $total_volunteers . '</h2>';
+    echo '<h2>Total Campaigns: ' . esc_html( $total_campaigns ) . '</h2>';
+    echo '<h2>Total Donations: $' . esc_html( number_format( $total_donations ) ) . '</h2>';
+    echo '<h2>Total Beneficiaries: ' . esc_html( $total_beneficiaries ) . '</h2>';
+    echo '<h2>Total Volunteers: ' . esc_html( $total_volunteers ) . '</h2>';
     echo '</div>';
 
     echo '<h3>Recent Donations</h3>';
     echo '<ul>';
-    foreach ($recent_donations as $donation) {
-        echo '<li>' . $donation['name'] . ' - $' . number_format($donation['amount']) . ' on ' . $donation['date'] . '</li>';
+    foreach ( $recent_donations as $donation ) {
+        if ( ! isset( $donation['name'], $donation['amount'], $donation['date'] ) ) {
+            error_log( 'Esteem NGO Plugin: skipping malformed donation record: ' . wp_json_encode( $donation ) );
+            continue;
+        }
+
+        echo '<li>' . esc_html( $donation['name'] ) . ' - $' . esc_html( number_format( $donation['amount'] ) ) . ' on ' . esc_html( $donation['date'] ) . '</li>';
     }
     echo '</ul>';
 
@@ -46,7 +67,11 @@ function display_super_admin_dashboard() {
 
 // Add the dashboard to the admin menu
 add_action('admin_menu', function() {
-    add_menu_page('Super Admin Dashboard', 'Dashboard', 'super_admin', 'super_admin_dashboard', 'display_super_admin_dashboard');
+    add_menu_page(
+        'Super Admin Dashboard',
+        'Dashboard',
+        esteem_ngo_dashboard_capability(),
+        'super_admin_dashboard',
+        'display_super_admin_dashboard'
+    );
 });
-
-?>
