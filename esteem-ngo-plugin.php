@@ -20,3 +20,5 @@ include_once plugin_dir_path( __FILE__ ) . 'includes/shortcodes.php';
 include_once plugin_dir_path( __FILE__ ) . 'includes/email-templates.php';
 include_once plugin_dir_path( __FILE__ ) . 'includes/payment-integration.php';
 include_once plugin_dir_path( __FILE__ ) . 'includes/branding-settings.php';
+include_once plugin_dir_path( __FILE__ ) . 'includes/roles-permissions.php';
+include_once plugin_dir_path( __FILE__ ) . 'includes/super-admin-dashboard.php';

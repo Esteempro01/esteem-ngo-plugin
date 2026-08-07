@@ -1,4 +1,10 @@
 <?php
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 // Database Tables
 // Table: campaigns
 // Fields: id, name, description, start_date, end_date, status
